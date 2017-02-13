@@ -66,8 +66,12 @@ func LoadMinConfig(filein string) (*Config, error) {
 		if value == "nofiles" {
 			structured.Security.NoFiles = 1
 		} else if v.Kind() == reflect.Map {
+			var ok bool
 			user := value.(map[string]interface{})
-			structured.Security.SetUser = user["setuser"].(string)
+			structured.Security.SetUser, ok = user["setuser"].(string)
+			if !ok {
+				structured.Security.SetUser = "nobody"
+			}
 		}
 	}
 	return &structured, nil
